@@ -2,90 +2,11 @@
 <html>
   <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WikipediaViewer</title>
-    <style media="screen">
-      body {
-        background-color: grey;
-        text-align: center;
-        font-size: 5vmin;
-        padding: 0;
-        margin: 0;
-      }
-      #pageTitle {
-        margin-top: 5%;
-        font-size: 10vmin;
-      }
-      .buttonContainer {
-        display: flex;
-        justify-content: space-around;
-        width: 60%;
-        max-width: 400px;
-        margin: auto;
-      }
-      #input {
-        margin: 2%;
-        font-size: inherit;
-        width: 60%;
-        min-width: 220px;
-        max-width: 400px;
-        height: 7%;
-        background-color: GhostWhite;
-      }
-      #input:focus {
-        outline-style: none;
-      }
-
-      .button {
-        background-color: LightGrey;
-        padding: 1vmin;
-        margin: 1vmin;
-        cursor: pointer;
-      }
-
-      .button:active {
-  			box-shadow: 0px 0px 2vmin 2px black;
-  		}
-
-  		@media only screen and (any-hover: hover), (-moz-touch-enabled: 0) {
-  			.button:hover {
-  				box-shadow: 0px 0px 1vmin 1px black;
-  			}
-  			.button:active {
-  				box-shadow: 0px 0px 0px 0px black;
-  			}
-  		}
-
-      #resultContainer {
-        width: 90%;
-        max-width: 800px;
-        min-width: 300px;
-        margin: auto;
-        margin-top: 1vh;
-        padding-top: .5vmin;
-        padding-bottom: .5vmin;
-        background-color: blue;
-        border-radius: 10px;
-      }
-      .entry {
-        border-radius: 10px;
-        text-align: left;
-        background-color: LightGray;
-        padding: 1vmin;
-        margin: 1vmin;
-      }
-      .title {
-        color: DarkBlue;
-        cursor: pointer;
-        text-decoration: underline;
-        text-align: left;
-      }
-      .description {
-        text-align: justify;
-      }
-
-      .hide {display: none;}
-    </style>
+    <link rel="stylesheet" href="style.css">
   </head>
+
   <body>
     <div id="pageTitle">wiki-waka</div>
     <input type="text" id="input" autofocus>
@@ -94,76 +15,7 @@
       <div class="button" id="random" onclick="random()">random</div>
     </div>
     <div id="resultContainer" class="hide"></div>
-    <script type="text/javascript">
-    "use strict";
 
-    function search() {
-      var input = document.getElementById('input').value
-      if (input == '') {input = 'nothing';}
-      var url = 'https://en.wikipedia.org/w/api.php?action=opensearch&origin=*&search='+input;
-      reqestData(url, parseData);
-    }
-
-    function random() {
-      var url = 'https://en.wikipedia.org/w/api.php?action=query&list=random&origin=*&format=json&rnnamespace=0';
-      reqestData(url, parseRandom);
-    }
-
-    function parseRandom(json) {
-      var title = json.query.random["0"].title;
-      document.getElementById('input').value = title;
-      search();
-    }
-
-    function parseData(json) {
-      var parent = document.getElementById('resultContainer');
-      var children = parent.childNodes.length;
-      if (children == 0) {
-        var entry = document.createElement("div");
-        entry.setAttribute('class', 'entry')
-        var description = document.createElement("div");
-        description.appendChild(document.createTextNode("no results, try again"));
-        description.setAttribute('class', 'description')
-        entry.appendChild(description);
-        parent.appendChild(entry);
-        parent.classList.remove('hide');
-        return;
-      }
-      for (var i = 0; i < children; i++) {
-        parent.removeChild(parent.childNodes[0]);
-      }
-      var len = json[1].length;
-      for (var i = 0; i < len; i++) {
-        var entry = document.createElement("div");
-        entry.setAttribute('class', 'entry')
-        var title = document.createElement("a");
-        title.appendChild(document.createTextNode(json[1][i]));
-        title.setAttribute('class', 'title')
-        title.setAttribute('href', json[3][i])
-        var description = document.createElement("div");
-        description.appendChild(document.createTextNode(json[2][i]));
-        description.setAttribute('class', 'description')
-        entry.appendChild(title);
-        entry.appendChild(description);
-        parent.appendChild(entry);
-      }
-      parent.classList.remove('hide');
-    }
-
-    function reqestData(url, callback) {
-      var xhttp = new XMLHttpRequest();
-      xhttp.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-          var json = JSON.parse(xhttp.responseText);
-          callback(json);
-        }
-      }
-      xhttp.open("GET", url, true);
-      xhttp.send();
-    }
-
-    document.addEventListener("keydown", ()=>{if (event.keyCode == 13) {search();}}, event);
-
-    </script>
+    <script src="script.js"></script>
   </body>
 </html>
